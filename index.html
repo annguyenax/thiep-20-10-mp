@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gửi Mai Phương 🌸</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap');
@@ -25,7 +25,7 @@
 
   #app{
     position:relative;
-    width:100%; height:100vh;
+    width:100%; height:100vh; height:100dvh;
     display:flex; align-items:center; justify-content:center;
     overflow:hidden;
   }
@@ -47,6 +47,46 @@
   @keyframes blobFloat{
     0%,100%{ transform: translate(0,0) scale(1); }
     50%    { transform: translate(18px,-22px) scale(1.08); }
+  }
+
+  /* Soft ambient wings stay behind the card and never intercept a tap. */
+  .ambient{
+    position:absolute; inset:0;
+    pointer-events:none; user-select:none; z-index:1;
+    overflow:hidden;
+  }
+  .ambient-wing{
+    position:absolute; top:0; bottom:0;
+    width:clamp(24px, calc((100vw - 420px) / 2), 360px);
+  }
+  .ambient-wing.left{ left:0; }
+  .ambient-wing.right{ right:0; }
+  .ambient-wing::before{
+    content:''; position:absolute; inset:12% -35%;
+    background:radial-gradient(ellipse, #ff9fc450, #e0b9ff24 45%, transparent 70%);
+    animation:ambientBreathe 9s ease-in-out infinite alternate;
+  }
+  .ambient-wing.right::before{ animation-delay:-4.5s; }
+  .ambient-orbit{
+    position:absolute; inset:18% 12%;
+    border:1px solid #ffffff80; border-radius:50%;
+    transform:rotate(-14deg);
+    box-shadow:0 0 24px #ffb3d330, inset 0 0 24px #ffffff40;
+  }
+  .right .ambient-orbit{ transform:rotate(14deg); }
+  .ambient-mote{
+    position:absolute; left:var(--x); top:var(--y);
+    color:#d96b95; font-size:var(--size);
+    text-shadow:0 0 12px #fff, 0 0 24px #ff9fc4;
+    animation:ambientDrift var(--duration) ease-in-out var(--delay) infinite alternate;
+  }
+  @keyframes ambientBreathe{
+    from{ opacity:.5; transform:translateY(-3%) scale(.9); }
+    to{ opacity:1; transform:translateY(3%) scale(1.12); }
+  }
+  @keyframes ambientDrift{
+    from{ opacity:.25; transform:translateY(14px) rotate(-12deg); }
+    to{ opacity:.8; transform:translateY(-18px) rotate(12deg); }
   }
 
   /* ---------- sparkle twinkle ---------- */
@@ -87,8 +127,13 @@
     transform: scale(.92);
     transition: opacity .6s ease, transform .6s ease;
     z-index:2;
+    overflow-y:auto; overflow-x:hidden;
+    visibility:hidden;
   }
-  .screen.active{ opacity:1; pointer-events:auto; transform: scale(1); }
+  .screen.active{ opacity:1; pointer-events:auto; transform: scale(1); visibility:visible; }
+  .screen > *{ flex-shrink:0; }
+  .screen > :first-child{ margin-top:auto; }
+  .screen > :last-child{ margin-bottom:auto; }
 
   /* ---------- envelope ---------- */
   .envelope-wrap{ cursor:pointer; perspective: 900px; }
@@ -187,8 +232,9 @@
     padding: 12px 26px;
     border:none; border-radius: 999px;
     cursor:pointer;
-    background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+    background: linear-gradient(135deg, #ff6f98, #e8406e);
     color:white;
+    text-shadow: 0 1px 2px rgba(0,0,0,.35);
     box-shadow: 0 8px 18px rgba(255,92,138,.35);
     transition: transform .15s ease, box-shadow .25s ease;
     position:relative;
@@ -357,8 +403,10 @@
     backdrop-filter: blur(6px);
     opacity:0; pointer-events:none;
     transition: opacity .3s ease;
+    visibility:hidden;
+    padding:16px;
   }
-  .lightbox.show{ opacity:1; pointer-events:auto; }
+  .lightbox.show{ opacity:1; pointer-events:auto; visibility:visible; }
   .lightbox-card{
     background: rgba(255,255,255,.85);
     backdrop-filter: blur(16px) saturate(140%);
@@ -370,6 +418,7 @@
     text-align:center;
     transform: scale(.85) translateY(12px);
     transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    max-height:100%; overflow-y:auto;
   }
   .lightbox.show .lightbox-card{ transform: scale(1) translateY(0); }
   .lightbox-card img{
@@ -396,6 +445,7 @@
   .confetti{
     position:absolute; top:-20px; font-size:16px; opacity:.9;
     animation: confettiFall linear forwards;
+    pointer-events:none;
   }
   @keyframes confettiFall{
     to { transform: translateY(100vh) rotate(540deg); opacity:0; }
@@ -412,8 +462,20 @@
     padding-bottom: 36px;
   }
 
-  @media (max-width:380px){
-    .bouquet-wrap{ width:300px; height:290px; }
+  @media (max-width:600px){
+    .ambient-wing{ width:26px; opacity:.65; }
+    .ambient-orbit{ display:none; }
+    .screen{ padding:24px 12px; }
+    .card-box{ width:100%; padding:28px 20px; }
+    #screen-bouquet{ padding-top:48px; }
+  }
+  @media (max-width:383px){
+    .bouquet-wrap{ zoom:.8; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+    .ambient-mote{ opacity:.45; }
+    .petal, .confetti{ display:none; }
   }
 </style>
 </head>
@@ -424,6 +486,10 @@
   <div class="blob b2"></div>
   <div class="blob b3"></div>
   <div class="blob b4"></div>
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient-wing left"><div class="ambient-orbit"></div></div>
+    <div class="ambient-wing right"><div class="ambient-orbit"></div></div>
+  </div>
 
   <!-- Screen 0: envelope -->
   <div class="screen active" id="screen-envelope">
@@ -516,6 +582,19 @@
   /* ---------- background petals ---------- */
   const emojis = ['🌸','🌷','💮','🤍','💗'];
   const app = document.getElementById('app');
+  document.querySelectorAll('.ambient-wing').forEach(wing=>{
+    for(let i=0;i<12;i++){
+      const mote = document.createElement('span');
+      mote.className = 'ambient-mote';
+      mote.textContent = ['✦','♡','·'][i%3];
+      mote.style.setProperty('--x', (12 + Math.random()*72)+'%');
+      mote.style.setProperty('--y', (6 + i*7.5)+'%');
+      mote.style.setProperty('--size', (10 + Math.random()*12)+'px');
+      mote.style.setProperty('--duration', (5 + Math.random()*5)+'s');
+      mote.style.setProperty('--delay', (-Math.random()*10)+'s');
+      wing.appendChild(mote);
+    }
+  });
   for(let i=0;i<22;i++){
     const p = document.createElement('div');
     p.className='petal';
@@ -532,6 +611,7 @@
   function goTo(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    if(id==='screen-q2') placeYesInitial();
     if(id==='screen-bouquet') buildBouquet();
   }
 
@@ -561,6 +641,9 @@
     btnYes.style.top = '0px';
   }
   window.addEventListener('load', placeYesInitial);
+  window.addEventListener('resize', ()=>{
+    if(document.getElementById('screen-q2').classList.contains('active')) placeYesInitial();
+  });
 
   function runAway(){
     const zw = zone.clientWidth, zh = zone.clientHeight;
@@ -741,6 +824,7 @@
     lightbox.classList.add('show');
   }
   function closeLightbox(){ lightbox.classList.remove('show'); }
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLightbox(); });
   document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
 </script>
