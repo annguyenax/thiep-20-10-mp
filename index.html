@@ -243,7 +243,7 @@
   /* ---------- bouquet ---------- */
   .bouquet-wrap{
     position:relative;
-    width: 320px; height: 320px;
+    width: 360px; height: 330px;
     margin: 0 auto 10px;
   }
   .bouquet-glow{
@@ -337,13 +337,60 @@
     box-shadow:0 2px 8px rgba(0,0,0,.15), 0 0 0 3px rgba(255,255,255,.5);
     overflow:hidden;
     z-index:2;
+    cursor:pointer;
+    transition: transform .2s ease;
   }
+  .photo-center:hover{ transform: scale(1.12); }
   .photo-center img{
     width:100%; height:100%; object-fit:cover; display:block;
   }
   .photo-center .fallback{
     display:flex; align-items:center; justify-content:center;
     width:100%; height:100%; font-size:16px;
+  }
+
+  /* ---------- lightbox: chạm bông hoa xem ảnh to ---------- */
+  .lightbox{
+    position:fixed; inset:0; z-index:50;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(255,210,225,.55);
+    backdrop-filter: blur(6px);
+    opacity:0; pointer-events:none;
+    transition: opacity .3s ease;
+  }
+  .lightbox.show{ opacity:1; pointer-events:auto; }
+  .lightbox-card{
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(16px) saturate(140%);
+    border-radius: 22px;
+    padding: 14px 14px 18px;
+    max-width: 300px; width: 86%;
+    box-shadow: 0 25px 60px rgba(255,92,138,.35);
+    border: 1px solid rgba(255,255,255,.9);
+    text-align:center;
+    transform: scale(.85) translateY(12px);
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  .lightbox.show .lightbox-card{ transform: scale(1) translateY(0); }
+  .lightbox-card img{
+    width:100%; aspect-ratio: 1/1; object-fit:cover;
+    border-radius:16px;
+    box-shadow:0 6px 18px rgba(255,92,138,.3);
+    display:block;
+  }
+  .lightbox-card .fallback-big{
+    width:100%; aspect-ratio:1/1; border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:48px;
+    background: linear-gradient(135deg,#ffd1de,#ff8fab);
+  }
+  .lightbox-card p{
+    margin: 12px 4px 2px;
+    color:#a1415f; font-size:14px; line-height:1.5; font-weight:600;
+  }
+  .lightbox-close{
+    margin-top:12px;
+    font-size:14px; padding:8px 22px;
   }
 
   .confetti{
@@ -366,7 +413,7 @@
   }
 
   @media (max-width:380px){
-    .bouquet-wrap{ width:280px; height:280px; }
+    .bouquet-wrap{ width:300px; height:290px; }
   }
 </style>
 </head>
@@ -454,6 +501,15 @@
     </div>
   </div>
 
+  <!-- lightbox xem ảnh to khi chạm vào bông hoa -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-card" id="lightboxCard">
+      <div id="lightboxImgWrap"></div>
+      <p id="lightboxCaption"></p>
+      <button class="secondary lightbox-close" id="lightboxClose">Đóng lại 💗</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -536,17 +592,28 @@
     if(built) return; built = true;
     const wrap = document.getElementById('bouquetWrap');
     const positions = [
-      {x:-95,y:-30,rot:-24,size:62},
-      {x:-55,y:-85,rot:-12,size:72},
-      {x:0,y:-115,rot:0,size:78},
-      {x:55,y:-85,rot:12,size:72},
-      {x:95,y:-30,rot:24,size:62},
-      {x:-25,y:-55,rot:-6,size:60},
-      {x:25,y:-55,rot:6,size:60},
+      {x:-115,y:-15,rot:-28,size:58},
+      {x:-85,y:-65,rot:-18,size:68},
+      {x:-40,y:-100,rot:-8,size:74},
+      {x:10,y:-118,rot:2,size:80},
+      {x:60,y:-100,rot:10,size:74},
+      {x:105,y:-65,rot:20,size:68},
+      {x:130,y:-15,rot:28,size:58},
+      {x:-5,y:-55,rot:0,size:56},
     ];
-    // ảnh thật: đặt file vào thư mục assets/ với tên anh1.jpg .. anh7.jpg
-    const photos = ['assets/anh1.jpg','assets/anh2.jpg','assets/anh3.jpg','assets/anh4.jpg','assets/anh5.jpg','assets/anh6.jpg','assets/anh7.jpg'];
-    const fallbackIcons = ['💗','🌷','💐','😍','🥰','✨','💞'];
+    // ảnh thật: đặt file vào thư mục assets/ với tên anh1.jpg .. anh8.jpg
+    const photos = ['assets/anh1.jpg','assets/anh2.jpg','assets/anh4.jpg','assets/anh8.jpg','assets/anh3.jpg','assets/anh7.jpg','assets/anh5.jpg','assets/anh6.jpg'];
+    const fallbackIcons = ['💗','👘','💐','🌊','📚','🪞','😍','☎️'];
+    const captions = [
+      'Khoảnh khắc đời thường cũng dễ thương lạ 🛒',
+      'Tà áo dài đỏ giữa nắng, đẹp muốn xỉu 👘',
+      'Bữa tối kỷ niệm, có hoa có em là đủ đầy 💐',
+      'Biển, gió và trái tim mình vẽ trên cát 🌊💗',
+      'Em của ngày đi học, lúc nào cũng xinh 📚',
+      'Em lúc nào cũng đẹp, kể cả soi gương vội 🪞',
+      'Chỉ một ánh nhìn cũng làm anh thương 🥹',
+      'Những cuộc gọi làm khoảng cách gần lại ☎️',
+    ];
 
     // lá rải quanh thân hoa
     const leafSpots = [
@@ -606,6 +673,7 @@
       fb.style.display='none';
       center.appendChild(img);
       center.appendChild(fb);
+      center.addEventListener('click', ()=> openLightbox(i));
       sway.appendChild(center);
 
       f.appendChild(sway);
@@ -642,7 +710,39 @@
         setTimeout(()=>c.remove(), 5000);
       }, i*60);
     }
+
+    // lưu lại để lightbox dùng
+    window.__bouquetPhotos = photos;
+    window.__bouquetFallback = fallbackIcons;
+    window.__bouquetCaptions = captions;
   }
+
+  /* ---------- lightbox: chạm bông hoa xem ảnh to ---------- */
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImgWrap = document.getElementById('lightboxImgWrap');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+
+  function openLightbox(i){
+    const photos = window.__bouquetPhotos || [];
+    const fallbacks = window.__bouquetFallback || [];
+    const captions = window.__bouquetCaptions || [];
+    lightboxImgWrap.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = photos[i];
+    img.onerror = function(){
+      lightboxImgWrap.innerHTML = '';
+      const fb = document.createElement('div');
+      fb.className='fallback-big';
+      fb.textContent = fallbacks[i] || '💗';
+      lightboxImgWrap.appendChild(fb);
+    };
+    lightboxImgWrap.appendChild(img);
+    lightboxCaption.textContent = captions[i] || '';
+    lightbox.classList.add('show');
+  }
+  function closeLightbox(){ lightbox.classList.remove('show'); }
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
 </script>
 </body>
 </html>
