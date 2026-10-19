@@ -1,0 +1,22 @@
+Cách thêm ảnh thật vào bó hoa (5 bông hoa = 5 ảnh)
+====================================================
+
+1. Lấy 5 tấm ảnh anh muốn hiện (ảnh của em Mai Phương, hoặc ảnh chung 2 người).
+2. Đổi tên lần lượt thành: anh1.jpg, anh2.jpg, anh3.jpg, anh4.jpg, anh5.jpg
+   (nếu ảnh là .png thì đổi tên y vậy rồi mở file index.html, tìm dòng
+   "anh1.jpg" ... sửa đuôi .jpg thành .png cho đúng từng file)
+3. Copy 5 file ảnh đó bỏ vào thư mục "assets" nằm cùng cấp với index.html:
+   D:\download\QuaTang-20-10-MaiPhuong\assets\anh1.jpg
+   D:\download\QuaTang-20-10-MaiPhuong\assets\anh2.jpg
+   D:\download\QuaTang-20-10-MaiPhuong\assets\anh3.jpg
+   D:\download\QuaTang-20-10-MaiPhuong\assets\anh4.jpg
+   D:\download\QuaTang-20-10-MaiPhuong\assets\anh5.jpg
+4. Mở lại index.html (double click, hoặc F5 nếu đang mở) -> 5 bông hoa sẽ tự hiện ảnh thật.
+   Nếu thiếu ảnh nào, bông đó vẫn hiện icon trái tim/emoji thay thế, không bị lỗi/trắng trang.
+
+Gợi ý: ảnh vuông (tỉ lệ 1:1) sẽ đẹp nhất vì khung hiển thị là hình tròn, ảnh sẽ tự crop giữa ảnh.
+
+Cách gửi file cho người yêu:
+- Cách đơn giản nhất: nén cả thư mục "QuaTang-20-10-MaiPhuong" thành 1 file .zip rồi gửi qua
+  Zalo/Messenger, em mở file index.html bên trong là chạy được trên điện thoại/máy tính,
+  không cần cài gì, không cần internet, không cần host.

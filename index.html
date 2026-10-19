@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Gửi Mai Phương 🌸</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap');
+
+  :root{
+    --pink: #ff8fab;
+    --pink-dark: #ff5c8a;
+    --pink-light: #ffe3ec;
+    --white: #fffaf9;
+  }
+  *{ box-sizing: border-box; }
+  html,body{
+    margin:0; padding:0; height:100%;
+    font-family:'Quicksand', sans-serif;
+    background: linear-gradient(160deg,#fff6f8 0%, #ffe3ec 45%, #ffd1e0 100%);
+    overflow:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .font-script{ font-family:'Pacifico', cursive; }
+
+  #app{
+    position:relative;
+    width:100%; height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+
+  /* ---------- mesh-gradient ambience blobs ---------- */
+  .blob{
+    position:absolute;
+    border-radius:50%;
+    filter: blur(50px);
+    opacity:.55;
+    pointer-events:none;
+    z-index:0;
+    animation: blobFloat 14s ease-in-out infinite;
+  }
+  .blob.b1{ width:260px; height:260px; left:-60px; top:-60px; background:#ffc2d6; animation-delay:0s; }
+  .blob.b2{ width:220px; height:220px; right:-50px; top:10%; background:#ffd9ea; animation-delay:3s; }
+  .blob.b3{ width:300px; height:300px; left:10%; bottom:-100px; background:#ffe9f0; animation-delay:6s; }
+  .blob.b4{ width:180px; height:180px; right:5%; bottom:5%; background:#fff2f6; animation-delay:9s; }
+  @keyframes blobFloat{
+    0%,100%{ transform: translate(0,0) scale(1); }
+    50%    { transform: translate(18px,-22px) scale(1.08); }
+  }
+
+  /* ---------- sparkle twinkle ---------- */
+  .sparkle{
+    position:absolute;
+    color:#fff;
+    text-shadow: 0 0 6px #ffb8cf, 0 0 10px #fff;
+    opacity:0;
+    pointer-events:none;
+    animation: twinkle 2.2s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{ opacity:0; transform: scale(.4) rotate(0deg); }
+    50%    { opacity:1; transform: scale(1) rotate(25deg); }
+  }
+
+  /* ---------- floating petals background ---------- */
+  .petal{
+    position:absolute; top:-40px;
+    font-size: 20px;
+    opacity:.75;
+    pointer-events:none;
+    animation: fall linear infinite;
+    user-select:none;
+    z-index:1;
+  }
+  @keyframes fall{
+    0%   { transform: translateY(-10vh) translateX(0) rotate(0deg); }
+    100% { transform: translateY(110vh) translateX(var(--drift,20px)) rotate(360deg); }
+  }
+
+  /* ---------- generic screen ---------- */
+  .screen{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding: 24px;
+    opacity:0; pointer-events:none;
+    transform: scale(.92);
+    transition: opacity .6s ease, transform .6s ease;
+    z-index:2;
+  }
+  .screen.active{ opacity:1; pointer-events:auto; transform: scale(1); }
+
+  /* ---------- envelope ---------- */
+  .envelope-wrap{ cursor:pointer; perspective: 900px; }
+  .envelope{
+    width: 230px; height: 158px;
+    position: relative;
+    margin: 0 auto 28px;
+    filter: drop-shadow(0 18px 30px rgba(255,92,138,.4));
+    transition: transform .4s ease;
+  }
+  .envelope-wrap:hover .envelope{ transform: translateY(-4px); }
+  .envelope .body{
+    position:absolute; inset:0;
+    background: linear-gradient(135deg,#fff,#ffe9f1);
+    border-radius: 12px;
+    border: 2px solid var(--pink);
+    box-shadow: inset 0 -10px 18px rgba(255,140,170,.18);
+  }
+  .envelope .letter-peek{
+    position:absolute; left:50%; top:14px; width:72%; height:70px;
+    transform: translate(-50%,0);
+    background: linear-gradient(160deg,#fff,#fff5f8);
+    border-radius: 8px 8px 2px 2px;
+    border: 1px solid #ffd4e2;
+    box-shadow: 0 4px 10px rgba(255,92,138,.18);
+    opacity:0;
+    transition: all .55s cubic-bezier(.3,.9,.4,1.3);
+    z-index:2;
+  }
+  .envelope.open .letter-peek{ opacity:1; transform: translate(-50%,-34px); }
+  .envelope .flap{
+    position:absolute; top:0; left:0; width:100%; height:82px;
+    background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+    clip-path: polygon(0 0, 50% 85%, 100% 0);
+    border-radius: 12px 12px 0 0;
+    transform-origin: top;
+    transition: transform .7s cubic-bezier(.68,-0.4,.27,1.4);
+    z-index:3;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
+  .envelope.open .flap{ transform: rotateX(160deg); }
+  .envelope .heart-seal{
+    position:absolute; left:50%; top:32px; transform:translate(-50%,0);
+    font-size: 28px; z-index:4; animation: pulse 1.4s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.2)) drop-shadow(0 0 8px rgba(255,255,255,.6));
+  }
+  .envelope.open .heart-seal{ opacity:0; transition: opacity .25s ease; }
+  @keyframes pulse{ 0%,100%{transform:translate(-50%,0) scale(1);} 50%{transform:translate(-50%,0) scale(1.15);} }
+
+  .hint{ font-size:14px; color:#c9496c; margin-top:6px; opacity:.85; }
+
+  /* ---------- card content ---------- */
+  .card-box{
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-radius: 26px;
+    padding: 34px 28px;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 25px 55px rgba(255,92,138,.3), 0 2px 0 rgba(255,255,255,.8) inset;
+    border: 1px solid rgba(255,255,255,.8);
+    position:relative;
+  }
+  .card-box::before{
+    content:'';
+    position:absolute; inset:-1px;
+    border-radius: 26px;
+    padding:1px;
+    background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,143,171,.5), rgba(255,255,255,.9));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events:none;
+  }
+  h1.title{
+    font-family:'Pacifico', cursive;
+    font-size: 30px;
+    margin: 0 0 6px;
+    background: linear-gradient(90deg, var(--pink-dark), #ff9eb8, var(--pink-dark));
+    background-size: 220% auto;
+    -webkit-background-clip: text; background-clip: text; color:transparent;
+    animation: shimmer 3.5s linear infinite;
+  }
+  @keyframes shimmer{
+    0%{ background-position: 0% 50%; }
+    100%{ background-position: 220% 50%; }
+  }
+  p.sub{ color:#a85a73; margin:0 0 20px; font-size:15px; line-height:1.5; }
+  p.msg{ color:#7a3a4d; font-size:16px; line-height:1.7; margin: 10px 0 22px; }
+
+  .btn-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  button{
+    font-family:'Quicksand', sans-serif;
+    font-weight:700;
+    font-size:16px;
+    padding: 12px 26px;
+    border:none; border-radius: 999px;
+    cursor:pointer;
+    background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+    color:white;
+    box-shadow: 0 8px 18px rgba(255,92,138,.35);
+    transition: transform .15s ease, box-shadow .25s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  button::after{
+    content:'';
+    position:absolute; inset:0;
+    background: linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 70%);
+    background-size: 220% 100%;
+    background-position: 140% 0;
+    transition: background-position .6s ease;
+    pointer-events:none;
+  }
+  button:hover::after{ background-position: -40% 0; }
+  button:hover{ box-shadow: 0 10px 24px rgba(255,92,138,.5); transform: translateY(-1px); }
+  button:active{ transform: scale(.94); }
+  button.secondary{
+    background: #fff;
+    color: var(--pink-dark);
+    border: 2px solid var(--pink);
+    box-shadow:none;
+  }
+  button.secondary:hover{ box-shadow: 0 6px 16px rgba(255,92,138,.22); }
+
+  /* ---------- runaway button zone ---------- */
+  .q2-zone{
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    height: 150px;
+    margin: 10px auto 0;
+  }
+  #btnYes{
+    position:absolute;
+    transition: left .18s ease, top .18s ease;
+  }
+  #btnNo{ position:relative; }
+
+  .reveal-msg{
+    margin-top: 18px;
+    color: var(--pink-dark);
+    font-weight:700;
+    font-size: 17px;
+    line-height:1.6;
+    opacity:0;
+    transform: translateY(8px);
+    transition: all .5s ease;
+  }
+  .reveal-msg.show{ opacity:1; transform: translateY(0); }
+
+  /* ---------- bouquet ---------- */
+  .bouquet-wrap{
+    position:relative;
+    width: 320px; height: 320px;
+    margin: 0 auto 10px;
+  }
+  .bouquet-glow{
+    position:absolute; left:50%; top:38%; width:220px; height:220px;
+    transform: translate(-50%,-50%);
+    background: radial-gradient(circle, rgba(255,210,225,.65) 0%, rgba(255,210,225,0) 70%);
+    filter: blur(6px);
+    z-index:0;
+  }
+  .stem{
+    position:absolute; left:50%; bottom:6px; width:6px; height:120px;
+    background: linear-gradient(#8fc98a,#4f8f4a);
+    transform-origin: bottom center;
+    border-radius: 4px;
+    z-index:0;
+  }
+  .leaf{
+    position:absolute;
+    width:26px; height:14px;
+    background: linear-gradient(135deg,#9ad694,#5fa958);
+    border-radius: 0 100% 0 100%;
+    z-index:0;
+  }
+  .ribbon{
+    position:absolute; left:50%; bottom:2px; transform:translate(-50%,0);
+    width:54px; height:34px; z-index:1;
+  }
+  .ribbon .loop{
+    position:absolute; top:0; width:26px; height:26px;
+    background: linear-gradient(135deg, var(--pink-dark), var(--pink));
+    border-radius: 50% 50% 50% 4px;
+    box-shadow: 0 3px 6px rgba(0,0,0,.15);
+  }
+  .ribbon .loop.left{ left:0; transform: rotate(-20deg); }
+  .ribbon .loop.right{ right:0; transform: rotate(20deg) scaleX(-1); }
+  .ribbon .knot{
+    position:absolute; left:50%; top:4px; transform:translateX(-50%);
+    width:14px; height:16px; border-radius:4px;
+    background: var(--pink-dark);
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+  }
+  .flower{
+    position:absolute;
+    width: 70px; height:70px;
+    opacity:0; transform: scale(0) rotate(0deg);
+    animation: bloom .9s cubic-bezier(.34,1.56,.64,1) forwards;
+    z-index:1;
+  }
+  .flower .sway{
+    width:100%; height:100%;
+    animation: sway 3.6s ease-in-out infinite;
+  }
+  @keyframes bloom{
+    0%   { opacity:0; transform: scale(0) rotate(-30deg); }
+    70%  { opacity:1; transform: scale(1.12) rotate(6deg); }
+    100% { opacity:1; transform: scale(1) rotate(0deg); }
+  }
+  @keyframes sway{
+    0%,100%{ transform: rotate(-3deg); }
+    50%    { transform: rotate(3deg); }
+  }
+  .petal-ring{ position:absolute; inset:0; }
+  .petal-ring.outer .p{
+    position:absolute; left:50%; top:50%;
+    width: 32px; height: 44px;
+    margin:-22px 0 0 -16px;
+    background: radial-gradient(circle at 50% 25%, #fff, var(--pink) 78%);
+    border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+    transform-origin: 50% 100%;
+    box-shadow: 0 2px 5px rgba(255,92,138,.25);
+  }
+  .petal-ring.inner{ inset: 10px; }
+  .petal-ring.inner .p{
+    position:absolute; left:50%; top:50%;
+    width: 20px; height: 28px;
+    margin:-14px 0 0 -10px;
+    background: radial-gradient(circle at 50% 25%, #fff, #ffc6d9 85%);
+    border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+    transform-origin: 50% 100%;
+    opacity:.95;
+  }
+  .photo-center{
+    position:absolute; left:50%; top:50%;
+    width: 42px; height:42px;
+    margin:-21px 0 0 -21px;
+    border-radius:50%;
+    background: linear-gradient(135deg,#ffd1de,#ff8fab);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:14px;
+    border: 2px solid #fff;
+    box-shadow:0 2px 8px rgba(0,0,0,.15), 0 0 0 3px rgba(255,255,255,.5);
+    overflow:hidden;
+    z-index:2;
+  }
+  .photo-center img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .photo-center .fallback{
+    display:flex; align-items:center; justify-content:center;
+    width:100%; height:100%; font-size:16px;
+  }
+
+  .confetti{
+    position:absolute; top:-20px; font-size:16px; opacity:.9;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall{
+    to { transform: translateY(100vh) rotate(540deg); opacity:0; }
+  }
+
+  .final-msg{ margin-top: 12px; max-width:360px; }
+  .final-msg h2{ font-family:'Pacifico',cursive; color:var(--pink-dark); font-size:26px; margin:0 0 10px;}
+  .final-msg p{ color:#7a3a4d; font-size:15px; line-height:1.7; }
+
+  #screen-bouquet{
+    justify-content:flex-start;
+    overflow-y:auto;
+    padding-top: 36px;
+    padding-bottom: 36px;
+  }
+
+  @media (max-width:380px){
+    .bouquet-wrap{ width:280px; height:280px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
+
+  <!-- Screen 0: envelope -->
+  <div class="screen active" id="screen-envelope">
+    <div class="envelope-wrap" id="envelopeWrap">
+      <div class="envelope" id="envelope">
+        <div class="body"></div>
+        <div class="letter-peek"></div>
+        <div class="heart-seal">💌</div>
+        <div class="flap"></div>
+      </div>
+    </div>
+    <div class="hint font-script" style="font-size:20px;">Gửi Mai Phương 💕</div>
+    <div class="hint">(chạm vào thiệp để mở nhé)</div>
+  </div>
+
+  <!-- Screen 1: lời chào 20/10 -->
+  <div class="screen" id="screen-greeting">
+    <div class="card-box">
+      <h1 class="title">Chúc mừng 20/10 💐</h1>
+      <p class="msg">Gửi Mai Phương của anh,<br>
+      hôm nay là ngày đặc biệt dành cho em — người đã làm cuộc sống của anh dễ thương hơn rất nhiều.<br><br>
+      Trước khi đến phần quà, em trả lời anh vài câu nhỏ nha 🌸</p>
+      <button onclick="goTo('screen-q1')">Bắt đầu nào</button>
+    </div>
+  </div>
+
+  <!-- Screen 2: câu hỏi 1 -->
+  <div class="screen" id="screen-q1">
+    <div class="card-box">
+      <h1 class="title" style="font-size:22px;">Câu hỏi 1</h1>
+      <p class="sub">Hôm nay nhận được thiệp này của anh, em có vui không? 🥹</p>
+      <div class="btn-row">
+        <button onclick="goTo('screen-q2')">Có 💗</button>
+        <button class="secondary" id="q1No">Không 😤</button>
+      </div>
+      <div class="reveal-msg" id="q1NoMsg">Ơ chắc tại thiệp chưa đủ ngọt nè, để anh bù lại ở câu sau nha 🥺</div>
+    </div>
+  </div>
+
+  <!-- Screen 3: câu hỏi 2 (nút Có né chuột) -->
+  <div class="screen" id="screen-q2">
+    <div class="card-box">
+      <h1 class="title" style="font-size:22px;">Câu hỏi 2</h1>
+      <p class="sub">Em có muốn nhận quà không? 🎁</p>
+      <div class="q2-zone" id="q2zone">
+        <button id="btnYes">Có 💝</button>
+        <button class="secondary" id="btnNo" style="position:absolute; left:50%; bottom:0; transform:translateX(-50%);">Không 🙅‍♀️</button>
+      </div>
+      <div class="reveal-msg" id="q2Msg">
+        Ơ iu thế 🥹💗 vì em hiểu chuyện nên anh vẫn sẽ tặng quà nho nhỏ cho em,<br>hãy mong chờ nhé 🎁✨
+      </div>
+      <button class="secondary" id="q2Continue" style="display:none; margin-top:18px;" onclick="goTo('screen-bouquet')">Xem tiếp nào →</button>
+    </div>
+  </div>
+
+  <!-- Screen 4: bó hoa nở ra ảnh -->
+  <div class="screen" id="screen-bouquet">
+    <div class="bouquet-wrap" id="bouquetWrap">
+      <div class="bouquet-glow"></div>
+      <div class="stem" style="transform:translateX(-50%) rotate(-10deg); left:calc(50% - 10px);"></div>
+      <div class="stem" style="transform:translateX(-50%) rotate(10deg); left:calc(50% + 10px);"></div>
+      <div class="stem"></div>
+      <div class="ribbon">
+        <div class="loop left"></div>
+        <div class="loop right"></div>
+        <div class="knot"></div>
+      </div>
+      <!-- flowers/leaves/sparkles injected by JS -->
+    </div>
+    <div class="final-msg">
+      <h2>Happy 20/10, Mai Phương 🌷</h2>
+      <p>Mỗi bông hoa là một khoảnh khắc anh muốn giữ lại bên em.<br>
+      Cảm ơn em vì đã luôn ở đó. Chúc em luôn xinh đẹp, vui vẻ và được yêu thương thật nhiều 💕<br><br>
+      — Người yêu của em —</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ---------- background petals ---------- */
+  const emojis = ['🌸','🌷','💮','🤍','💗'];
+  const app = document.getElementById('app');
+  for(let i=0;i<22;i++){
+    const p = document.createElement('div');
+    p.className='petal';
+    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.left = Math.random()*100+'vw';
+    p.style.fontSize = (14+Math.random()*14)+'px';
+    p.style.animationDuration = (8+Math.random()*10)+'s';
+    p.style.animationDelay = (Math.random()*10)+'s';
+    p.style.setProperty('--drift', (Math.random()*80-40)+'px');
+    app.appendChild(p);
+  }
+
+  /* ---------- screen navigation ---------- */
+  function goTo(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(id==='screen-bouquet') buildBouquet();
+  }
+
+  /* ---------- envelope open ---------- */
+  document.getElementById('envelopeWrap').addEventListener('click', ()=>{
+    const env = document.getElementById('envelope');
+    if(env.classList.contains('open')) return;
+    env.classList.add('open');
+    setTimeout(()=> goTo('screen-greeting'), 650);
+  });
+
+  /* ---------- Q1 "Không" playful ---------- */
+  document.getElementById('q1No').addEventListener('click', ()=>{
+    document.getElementById('q1NoMsg').classList.add('show');
+    setTimeout(()=>{
+      goTo('screen-q2');
+    }, 1600);
+  });
+
+  /* ---------- Q2 runaway "Có" button ---------- */
+  const zone = document.getElementById('q2zone');
+  const btnYes = document.getElementById('btnYes');
+  const btnNo = document.getElementById('btnNo');
+
+  function placeYesInitial(){
+    btnYes.style.left = (zone.clientWidth/2 - btnYes.offsetWidth/2) + 'px';
+    btnYes.style.top = '0px';
+  }
+  window.addEventListener('load', placeYesInitial);
+
+  function runAway(){
+    const zw = zone.clientWidth, zh = zone.clientHeight;
+    const bw = btnYes.offsetWidth, bh = btnYes.offsetHeight;
+    const noH = btnNo.offsetHeight || 46;
+    const safeMargin = 24; // chừa khoảng trống phía trên nút "Không" để không bị đè
+    const maxX = Math.max(0, zw-bw);
+    const maxY = Math.max(0, zh - bh - noH - safeMargin);
+    const nx = Math.random()*maxX;
+    const ny = Math.random()*maxY;
+    btnYes.style.left = nx+'px';
+    btnYes.style.top = ny+'px';
+  }
+  btnYes.addEventListener('mouseenter', runAway);
+  btnYes.addEventListener('mousemove', runAway);
+  btnYes.addEventListener('touchstart', (e)=>{ e.preventDefault(); runAway(); }, {passive:false});
+  btnYes.addEventListener('click', (e)=>{ e.preventDefault(); runAway(); }); // chốt luôn k bắt được
+
+  btnNo.addEventListener('click', ()=>{
+    document.getElementById('q2Msg').classList.add('show');
+    btnYes.style.display='none';
+    btnNo.style.display='none';
+    document.getElementById('q2Continue').style.display='inline-block';
+  });
+
+  /* ---------- bouquet build ---------- */
+  let built = false;
+  function buildBouquet(){
+    if(built) return; built = true;
+    const wrap = document.getElementById('bouquetWrap');
+    const positions = [
+      {x:-95,y:-30,rot:-24,size:62},
+      {x:-55,y:-85,rot:-12,size:72},
+      {x:0,y:-115,rot:0,size:78},
+      {x:55,y:-85,rot:12,size:72},
+      {x:95,y:-30,rot:24,size:62},
+      {x:-25,y:-55,rot:-6,size:60},
+      {x:25,y:-55,rot:6,size:60},
+    ];
+    // ảnh thật: đặt file vào thư mục assets/ với tên anh1.jpg .. anh7.jpg
+    const photos = ['assets/anh1.jpg','assets/anh2.jpg','assets/anh3.jpg','assets/anh4.jpg','assets/anh5.jpg','assets/anh6.jpg','assets/anh7.jpg'];
+    const fallbackIcons = ['💗','🌷','💐','😍','🥰','✨','💞'];
+
+    // lá rải quanh thân hoa
+    const leafSpots = [
+      {x:-28,y:-10,rot:-35}, {x:28,y:-15,rot:35}, {x:-10,y:-60,rot:-55}, {x:12,y:-65,rot:55}
+    ];
+    leafSpots.forEach(spot=>{
+      const lf = document.createElement('div');
+      lf.className='leaf';
+      lf.style.left = 'calc(50% + '+spot.x+'px - 13px)';
+      lf.style.bottom = (10 - spot.y) + 'px';
+      lf.style.transform = 'rotate('+spot.rot+'deg)';
+      wrap.appendChild(lf);
+    });
+
+    positions.forEach((pos, i)=>{
+      const f = document.createElement('div');
+      f.className='flower';
+      f.style.width = pos.size+'px'; f.style.height = pos.size+'px';
+      f.style.left = 'calc(50% + ' + pos.x + 'px - ' + (pos.size/2) + 'px)';
+      f.style.top  = 'calc(50% + ' + pos.y + 'px - ' + (pos.size/2) + 'px)';
+      f.style.animationDelay = (i*0.18)+'s';
+
+      const sway = document.createElement('div');
+      sway.className='sway';
+      sway.style.animationDelay = (0.9 + i*0.18)+'s';
+
+      const ringOuter = document.createElement('div');
+      ringOuter.className='petal-ring outer';
+      for(let k=0;k<6;k++){
+        const pet = document.createElement('div');
+        pet.className='p';
+        pet.style.transform = 'rotate('+(k*60 + pos.rot)+'deg) translateY(-14px)';
+        ringOuter.appendChild(pet);
+      }
+      const ringInner = document.createElement('div');
+      ringInner.className='petal-ring inner';
+      for(let k=0;k<5;k++){
+        const pet = document.createElement('div');
+        pet.className='p';
+        pet.style.transform = 'rotate('+(k*72 + 30 + pos.rot)+'deg) translateY(-9px)';
+        ringInner.appendChild(pet);
+      }
+      sway.appendChild(ringOuter);
+      sway.appendChild(ringInner);
+
+      const center = document.createElement('div');
+      center.className='photo-center';
+      const img = document.createElement('img');
+      img.src = photos[i];
+      img.onerror = function(){
+        this.style.display='none';
+        fb.style.display='flex';
+      };
+      const fb = document.createElement('div');
+      fb.className='fallback';
+      fb.textContent = fallbackIcons[i];
+      fb.style.display='none';
+      center.appendChild(img);
+      center.appendChild(fb);
+      sway.appendChild(center);
+
+      f.appendChild(sway);
+      wrap.appendChild(f);
+    });
+
+    // sparkle lấp lánh quanh bó hoa
+    const sparkleSpots = [
+      {x:-110,y:-70},{x:110,y:-70},{x:-60,y:-130},{x:60,y:-130},
+      {x:0,y:-150},{x:-130,y:-20},{x:130,y:-20},{x:0,y:-60}
+    ];
+    sparkleSpots.forEach((spot,i)=>{
+      const s = document.createElement('div');
+      s.className='sparkle';
+      s.textContent = '✦';
+      s.style.left = 'calc(50% + '+spot.x+'px)';
+      s.style.top  = 'calc(50% + '+spot.y+'px)';
+      s.style.fontSize = (12+Math.random()*10)+'px';
+      s.style.animationDelay = (1.2 + i*0.3)+'s';
+      wrap.appendChild(s);
+    });
+
+    // confetti burst
+    const colors=['🌸','💮','🤍','💗','✨'];
+    for(let i=0;i<30;i++){
+      setTimeout(()=>{
+        const c = document.createElement('div');
+        c.className='confetti';
+        c.textContent = colors[Math.floor(Math.random()*colors.length)];
+        c.style.left = Math.random()*100+'vw';
+        c.style.animationDuration = (2.5+Math.random()*2)+'s';
+        c.style.fontSize = (14+Math.random()*12)+'px';
+        app.appendChild(c);
+        setTimeout(()=>c.remove(), 5000);
+      }, i*60);
+    }
+  }
+</script>
+</body>
+</html>
