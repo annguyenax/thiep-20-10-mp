@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gửi Mai Phương 🌸</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💗%3C/text%3E%3C/svg%3E">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap');
 
@@ -183,7 +184,9 @@
   .envelope.open .heart-seal{ opacity:0; transition: opacity .25s ease; }
   @keyframes pulse{ 0%,100%{transform:translate(-50%,0) scale(1);} 50%{transform:translate(-50%,0) scale(1.15);} }
 
-  .hint{ font-size:14px; color:#c9496c; margin-top:6px; opacity:.85; }
+  .hint{ font-size:15px; color:#a9365b; margin-top:8px; }
+  .question-progress{ color:#a9365b; font-size:14px; font-weight:700; margin:0 0 12px; }
+  button:focus-visible, [tabindex]:focus-visible{ outline:3px solid #a9365b; outline-offset:5px; }
 
   /* ---------- card content ---------- */
   .card-box{
@@ -267,10 +270,13 @@
     max-width: 340px;
     height: 150px;
     margin: 10px auto 0;
+    overflow:hidden;
+    transition:height .28s ease, margin .28s ease;
   }
+  .q2-zone.answered{ height:0; margin:0 auto; }
   #btnYes{
     position:absolute;
-    transition: left .18s ease, top .18s ease;
+    transition: left .3s cubic-bezier(.22,.61,.36,1), top .3s cubic-bezier(.22,.61,.36,1);
   }
   #btnNo{ position:relative; }
 
@@ -373,8 +379,8 @@
   }
   .photo-center{
     position:absolute; left:50%; top:50%;
-    width: 42px; height:42px;
-    margin:-21px 0 0 -21px;
+    width: 48px; height:48px;
+    margin:-24px 0 0 -24px;
     border-radius:50%;
     background: linear-gradient(135deg,#ffd1de,#ff8fab);
     display:flex; align-items:center; justify-content:center;
@@ -402,7 +408,7 @@
     background: rgba(255,210,225,.55);
     backdrop-filter: blur(6px);
     opacity:0; pointer-events:none;
-    transition: opacity .3s ease;
+    transition: opacity .16s ease;
     visibility:hidden;
     padding:16px;
   }
@@ -416,8 +422,8 @@
     box-shadow: 0 25px 60px rgba(255,92,138,.35);
     border: 1px solid rgba(255,255,255,.9);
     text-align:center;
-    transform: scale(.85) translateY(12px);
-    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    transform: scale(.97) translateY(4px);
+    transition: transform .18s ease-out;
     max-height:100%; overflow-y:auto;
   }
   .lightbox.show .lightbox-card{ transform: scale(1) translateY(0); }
@@ -441,6 +447,10 @@
     margin-top:12px;
     font-size:14px; padding:8px 22px;
   }
+  .lightbox-nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; }
+  .lightbox-nav button{ min-width:44px; min-height:44px; padding:8px 14px; }
+  .lightbox-count{ color:#a1415f; font-size:14px; }
+  .bouquet-hint{ color:#a9365b; font-size:14px; line-height:1.6; max-width:360px; margin:0 0 16px; }
 
   .confetti{
     position:absolute; top:-20px; font-size:16px; opacity:.9;
@@ -462,6 +472,27 @@
     padding-bottom: 36px;
   }
 
+  @media (min-width:901px){
+    .envelope{ width:310px; height:214px; margin-bottom:40px; }
+    .envelope .flap{ height:112px; }
+    .envelope .heart-seal{ top:48px; font-size:38px; }
+    .envelope .letter-peek{ height:94px; }
+    .envelope-wrap:hover .envelope{ transform:translateY(-8px) rotate(-2deg); }
+    #screen-envelope .hint{ font-size:18px; }
+    #screen-envelope .hint.font-script{ font-size:26px !important; }
+    .card-box{ max-width:500px; padding:40px 36px; }
+    h1.title{ font-size:34px; }
+    p.sub{ font-size:17px; }
+    p.msg{ font-size:18px; }
+    .question-progress{ font-size:16px; }
+    .bouquet-wrap{ width:440px; height:390px; }
+    .photo-center{ width:56px; height:56px; margin:-28px 0 0 -28px; }
+    .bouquet-hint{ font-size:16px; max-width:480px; }
+    .final-msg{ max-width:480px; }
+    .final-msg h2{ font-size:30px; }
+    .final-msg p{ font-size:17px; }
+    .lightbox-card{ max-width:380px; }
+  }
   @media (max-width:600px){
     .ambient-wing{ width:26px; opacity:.65; }
     .ambient-orbit{ display:none; }
@@ -493,7 +524,7 @@
 
   <!-- Screen 0: envelope -->
   <div class="screen active" id="screen-envelope">
-    <div class="envelope-wrap" id="envelopeWrap">
+    <div class="envelope-wrap" id="envelopeWrap" role="button" tabindex="0" aria-label="Mở thiệp gửi Mai Phương">
       <div class="envelope" id="envelope">
         <div class="body"></div>
         <div class="letter-peek"></div>
@@ -519,6 +550,7 @@
   <!-- Screen 2: câu hỏi 1 -->
   <div class="screen" id="screen-q1">
     <div class="card-box">
+      <p class="question-progress">Câu hỏi 1/2</p>
       <h1 class="title" style="font-size:22px;">Câu hỏi 1</h1>
       <p class="sub">Hôm nay nhận được thiệp này của anh, em có vui không? 🥹</p>
       <div class="btn-row">
@@ -532,6 +564,7 @@
   <!-- Screen 3: câu hỏi 2 (nút Có né chuột) -->
   <div class="screen" id="screen-q2">
     <div class="card-box">
+      <p class="question-progress">Câu hỏi 2/2</p>
       <h1 class="title" style="font-size:22px;">Câu hỏi 2</h1>
       <p class="sub">Em có muốn nhận quà không? 🎁</p>
       <div class="q2-zone" id="q2zone">
@@ -547,6 +580,7 @@
 
   <!-- Screen 4: bó hoa nở ra ảnh -->
   <div class="screen" id="screen-bouquet">
+    <p class="bouquet-hint" id="bouquetHint">Chạm vào từng bông hoa để xem ảnh nhé 💗</p>
     <div class="bouquet-wrap" id="bouquetWrap">
       <div class="bouquet-glow"></div>
       <div class="stem" style="transform:translateX(-50%) rotate(-10deg); left:calc(50% - 10px);"></div>
@@ -568,10 +602,15 @@
   </div>
 
   <!-- lightbox xem ảnh to khi chạm vào bông hoa -->
-  <div class="lightbox" id="lightbox">
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Ảnh kỷ niệm" tabindex="-1">
     <div class="lightbox-card" id="lightboxCard">
       <div id="lightboxImgWrap"></div>
-      <p id="lightboxCaption"></p>
+      <p id="lightboxCaption" aria-live="polite"></p>
+      <div class="lightbox-nav">
+        <button class="secondary" id="lightboxPrev" aria-label="Ảnh trước">←</button>
+        <span class="lightbox-count" id="lightboxCount"></span>
+        <button class="secondary" id="lightboxNext" aria-label="Ảnh tiếp theo">→</button>
+      </div>
       <button class="secondary lightbox-close" id="lightboxClose">Đóng lại 💗</button>
     </div>
   </div>
@@ -622,6 +661,9 @@
     env.classList.add('open');
     setTimeout(()=> goTo('screen-greeting'), 650);
   });
+  document.getElementById('envelopeWrap').addEventListener('keydown', (e)=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); e.currentTarget.click(); }
+  });
 
   /* ---------- Q1 "Không" playful ---------- */
   document.getElementById('q1No').addEventListener('click', ()=>{
@@ -645,7 +687,11 @@
     if(document.getElementById('screen-q2').classList.contains('active')) placeYesInitial();
   });
 
+  let lastDodge = -Infinity;
   function runAway(){
+    const now = performance.now();
+    if(now - lastDodge < 300 || zone.classList.contains('answered')) return;
+    lastDodge = now;
     const zw = zone.clientWidth, zh = zone.clientHeight;
     const bw = btnYes.offsetWidth, bh = btnYes.offsetHeight;
     const noH = btnNo.offsetHeight || 46;
@@ -663,6 +709,7 @@
   btnYes.addEventListener('click', (e)=>{ e.preventDefault(); runAway(); }); // chốt luôn k bắt được
 
   btnNo.addEventListener('click', ()=>{
+    zone.classList.add('answered');
     document.getElementById('q2Msg').classList.add('show');
     btnYes.style.display='none';
     btnNo.style.display='none';
@@ -711,12 +758,18 @@
       wrap.appendChild(lf);
     });
 
+    const flowerSpread = window.matchMedia('(min-width:901px)');
     positions.forEach((pos, i)=>{
       const f = document.createElement('div');
       f.className='flower';
       f.style.width = pos.size+'px'; f.style.height = pos.size+'px';
-      f.style.left = 'calc(50% + ' + pos.x + 'px - ' + (pos.size/2) + 'px)';
-      f.style.top  = 'calc(50% + ' + pos.y + 'px - ' + (pos.size/2) + 'px)';
+      function placeFlower(){
+        const spread = flowerSpread.matches ? 1.22 : 1;
+        f.style.left = 'calc(50% + ' + pos.x*spread + 'px - ' + (pos.size/2) + 'px)';
+        f.style.top  = 'calc(50% + ' + pos.y*spread + 'px - ' + (pos.size/2) + 'px)';
+      }
+      placeFlower();
+      flowerSpread.addEventListener('change', placeFlower);
       f.style.animationDelay = (i*0.18)+'s';
 
       const sway = document.createElement('div');
@@ -744,8 +797,12 @@
 
       const center = document.createElement('div');
       center.className='photo-center';
+      center.setAttribute('role', 'button');
+      center.tabIndex = 0;
+      center.setAttribute('aria-label', 'Xem ảnh: '+captions[i]);
       const img = document.createElement('img');
       img.src = photos[i];
+      img.alt = captions[i];
       img.onerror = function(){
         this.style.display='none';
         fb.style.display='flex';
@@ -757,6 +814,9 @@
       center.appendChild(img);
       center.appendChild(fb);
       center.addEventListener('click', ()=> openLightbox(i));
+      center.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openLightbox(i); }
+      });
       sway.appendChild(center);
 
       f.appendChild(sway);
@@ -804,14 +864,22 @@
   const lightbox = document.getElementById('lightbox');
   const lightboxImgWrap = document.getElementById('lightboxImgWrap');
   const lightboxCaption = document.getElementById('lightboxCaption');
+  let lightboxIndex = 0;
+  let lightboxTrigger = null;
 
   function openLightbox(i){
     const photos = window.__bouquetPhotos || [];
     const fallbacks = window.__bouquetFallback || [];
     const captions = window.__bouquetCaptions || [];
+    if(!photos.length) return;
+    lightboxIndex = (i + photos.length) % photos.length;
+    i = lightboxIndex;
+    if(!lightbox.classList.contains('show')) lightboxTrigger = document.activeElement;
+    document.getElementById('bouquetHint').style.visibility = 'hidden';
     lightboxImgWrap.innerHTML = '';
     const img = document.createElement('img');
     img.src = photos[i];
+    img.alt = captions[i] || 'Ảnh kỷ niệm';
     img.onerror = function(){
       lightboxImgWrap.innerHTML = '';
       const fb = document.createElement('div');
@@ -821,10 +889,29 @@
     };
     lightboxImgWrap.appendChild(img);
     lightboxCaption.textContent = captions[i] || '';
+    document.getElementById('lightboxCount').textContent = (i+1)+' / '+photos.length;
     lightbox.classList.add('show');
+    document.getElementById('lightboxClose').focus({preventScroll:true});
   }
-  function closeLightbox(){ lightbox.classList.remove('show'); }
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLightbox(); });
+  function closeLightbox(){
+    if(!lightbox.classList.contains('show')) return;
+    lightbox.classList.remove('show');
+    if(lightboxTrigger) lightboxTrigger.focus({preventScroll:true});
+  }
+  document.getElementById('lightboxPrev').addEventListener('click', ()=>openLightbox(lightboxIndex-1));
+  document.getElementById('lightboxNext').addEventListener('click', ()=>openLightbox(lightboxIndex+1));
+  document.addEventListener('keydown', (e)=>{
+    if(!lightbox.classList.contains('show')) return;
+    if(e.key==='Escape') closeLightbox();
+    if(e.key==='ArrowLeft'){ e.preventDefault(); openLightbox(lightboxIndex-1); }
+    if(e.key==='ArrowRight'){ e.preventDefault(); openLightbox(lightboxIndex+1); }
+    if(e.key==='Tab'){
+      const controls = [...lightbox.querySelectorAll('button')];
+      const index = controls.indexOf(document.activeElement);
+      if(e.shiftKey && index<=0){ e.preventDefault(); controls[controls.length-1].focus(); }
+      else if(!e.shiftKey && (index===controls.length-1 || index<0)){ e.preventDefault(); controls[0].focus(); }
+    }
+  });
   document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
 </script>
